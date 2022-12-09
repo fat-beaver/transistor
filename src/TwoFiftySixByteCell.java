@@ -1,6 +1,6 @@
 public class TwoFiftySixByteCell extends Component {
     public static final int ADDRESS_SIZE = 8; //log base two of the number of values
-    public static final int WORD_SIZE = 16;
+    public static final int WORD_SIZE = 8;
     private final Pin[] address;
     private final Pin[] in;
     private final Pin write;

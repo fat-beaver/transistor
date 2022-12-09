@@ -12,8 +12,5 @@ public class ANDGate extends LogicGate {
         transistorTwo.getCollector().addConnection(transistorOne.getEmitter());
         transistorTwo.getBase().addConnection(inTwo);
         transistorTwo.getEmitter().addConnection(out);
-
-
-
     }
 }
