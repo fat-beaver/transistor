@@ -3,12 +3,14 @@ import java.util.ArrayList;
 public class Pin {
     protected boolean state = false;
     protected boolean powered = false;
+    private final Component owner;
     protected ArrayList<Pin> connectionNetwork = new ArrayList<>();
-    public Pin() {
+    public Pin(Component owner) {
         connectionNetwork.add(this);
+        this.owner = owner;
     }
-    public void set(boolean state) {
-        powered = state;
+    public void set(boolean newLevel) {
+        powered = newLevel;
         checkState();
     }
     public boolean getState() {
@@ -19,12 +21,17 @@ public class Pin {
         if (connectionNetwork.contains(connection)) {
             System.out.println("pin is already part of this network! (this is a bug)");
         } else {
-            connectionNetwork.addAll(connection.connectionNetwork);
-            connection.connectionNetwork = connectionNetwork;
+            ArrayList<Pin> tempPins = new ArrayList<>(connection.connectionNetwork);
+            for (Pin pin : tempPins) {
+                pin.connectionNetwork.remove(pin);
+                connectionNetwork.add(pin);
+                pin.connectionNetwork = connectionNetwork;
+            }
         }
         checkState();
     }
     protected void checkState() {
+
         boolean connectedHasPower = false;
         for (Pin pin : connectionNetwork) {
             if (pin.powered) {
@@ -33,7 +40,10 @@ public class Pin {
             }
         }
         for (Pin pin : connectionNetwork) {
-            pin.state = connectedHasPower;
+            pin.forceSet(connectedHasPower);
         }
+    }
+    protected void forceSet(boolean state) {
+        this.state = state;
     }
 }

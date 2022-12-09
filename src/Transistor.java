@@ -3,9 +3,9 @@ public class Transistor extends Component{
     private final Pin emitter;
     private final Pin collector;
     public Transistor() {
-        base = new Pin();
-        emitter = new Pin();
-        collector = new Pin();
+        base = new Pin(this);
+        emitter = new Pin(this);
+        collector = new Pin(this);
     }
     @Override
     public void doCycle() {

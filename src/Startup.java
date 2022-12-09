@@ -24,10 +24,10 @@ public class Startup {
         }));
         cycleTimer.setRepeats(true);
 
-
         window.setTitle("transistor");
         window.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        window.setResizable(false);
 
         Container pane = window.getContentPane();
         GridBagConstraints constraints = new GridBagConstraints();
@@ -54,6 +54,7 @@ public class Startup {
         constraints.gridy = 0;
         pane.add(new JLabel("Significance"), constraints);
 
+        Adder lastAdder = null;
         for (int i = 0; i < WORD_SIZE; i++) {
 
             constraints.gridx = WORD_SIZE - i;
@@ -84,16 +85,29 @@ public class Startup {
             constraints.gridx = WORD_SIZE - i;
             pane.add(light.getVisuals(), constraints);
 
-            AndGate andGate = new AndGate();
-            components.add(andGate);
-            andGate.getSupply().addConnection(supply);
-            andGate.getOutput().addConnection(light.getInput());
-            andGate.getInputOne().addConnection(topSwitch.getOut());
-            andGate.getInputTwo().addConnection(bottomSwitch.getOut());
+            Adder adder = new Adder();
+            components.add(adder);
+            adder.getSupply().addConnection(supply);
+            adder.getInOne().addConnection(topSwitch.getOut());
+            adder.getInTwo().addConnection(bottomSwitch.getOut());
+            adder.getSumOut().addConnection(light.getInput());
+            if (i != 0) {
+                adder.getCarryIn().addConnection(lastAdder.getCarryOut());
+            }
+            lastAdder = adder;
         }
+        Light carryLight = new Light();
+        components.add(carryLight);
+        lastAdder.getCarryOut().addConnection(carryLight.getInput());
+
+        constraints.gridx = 0;
+        constraints.gridy = 4;
+        pane.add(carryLight.getVisuals(), constraints);
 
         constraints.gridy = 3;
         constraints.gridx = WORD_SIZE;
-        pane.add(new JButton("Compute"), constraints);
+        JButton stopButton = new JButton("Compute");
+        stopButton.addActionListener(actionEvent -> System.out.println("STOP"));
+        pane.add(stopButton, constraints);
     }
 }

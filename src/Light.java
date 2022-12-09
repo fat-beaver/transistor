@@ -1,12 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
 
-public class Light extends Component{
+public class Light extends Component {
     private final Pin input;
     private boolean state;
     private final JComponent visuals;
     public Light() {
-        input = new Pin();
+        input = new Pin(this);
         state = false; //off
         visuals = new JComponent() {
             @Override

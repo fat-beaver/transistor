@@ -1,19 +1,19 @@
-public class AndGate extends LogicGate{
-    public AndGate() {
+public class ANDGate extends LogicGate {
+    public ANDGate() {
         super();
 
         Transistor transistorOne = new Transistor();
         subComponents.add(transistorOne);
+        transistorOne.getCollector().addConnection(supply);
+        transistorOne.getBase().addConnection(inOne);
 
         Transistor transistorTwo = new Transistor();
         subComponents.add(transistorTwo);
-
-        transistorOne.getCollector().addConnection(supply);
         transistorTwo.getCollector().addConnection(transistorOne.getEmitter());
-
-        transistorOne.getBase().addConnection(inOne);
         transistorTwo.getBase().addConnection(inTwo);
-
         transistorTwo.getEmitter().addConnection(out);
+
+
+
     }
 }

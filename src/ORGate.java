@@ -1,5 +1,5 @@
-public class OrGate extends LogicGate {
-    public OrGate() {
+public class ORGate extends LogicGate {
+    public ORGate() {
         super();
 
         Transistor transistorOne = new Transistor();

@@ -6,8 +6,8 @@ public class Switch extends Component {
     private boolean state;
     private final JCheckBox visuals;
     public Switch() {
-        in = new Pin();
-        out = new Pin();
+        in = new Pin(this);
+        out = new Pin(this);
         state = false; //open
         visuals = new JCheckBox();
         visuals.addActionListener(actionEvent -> flip());
@@ -23,7 +23,6 @@ public class Switch extends Component {
     }
     @Override
     public void doCycle() {
-
         super.doCycle();
         if (state) {
             out.set(in.getState());
