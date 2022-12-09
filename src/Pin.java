@@ -22,7 +22,6 @@ public class Pin {
         } else {
             ArrayList<Pin> tempPins = new ArrayList<>(connection.connectionNetwork);
             for (Pin pin : tempPins) {
-                pin.connectionNetwork.remove(pin);
                 connectionNetwork.add(pin);
                 pin.connectionNetwork = connectionNetwork;
             }
@@ -30,7 +29,6 @@ public class Pin {
         checkState();
     }
     protected void checkState() {
-
         boolean connectedHasPower = false;
         for (Pin pin : connectionNetwork) {
             if (pin.powered) {
