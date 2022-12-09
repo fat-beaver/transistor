@@ -107,8 +107,6 @@ public class Startup extends Component{
         saveSwitch.getOut().addConnection(cell.getWrite());
         constraints.gridx = 1;
         pane.add(saveSwitch.getVisuals(), constraints);
-        
-        
     }
     private void setUpLatch(Container pane, GridBagConstraints constraints) {
         SupplyPin supply = new SupplyPin();

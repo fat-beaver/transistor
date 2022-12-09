@@ -1,8 +1,8 @@
 public class TwoFiftySixWordCell extends Component {
     public static final int NUMBER_OF_CELLS = 16;
-    public static final int BITS_PER_CELL = 16;
     public static final int ADDRESS_SIZE = 8; //log base two number of cells multiplied by bits per cell (16 * 16)
     public static final int ADDRESS_PARTS = 2;
+    public static final int WORD_SIZE = 1;
     private final Pin[] address;
     private final Pin in;
     private final Pin write;
@@ -23,6 +23,21 @@ public class TwoFiftySixWordCell extends Component {
         subComponents.add(selector);
         selector.getSupply().addConnection(supply);
 
+        for (int i = 0; i < NUMBER_OF_CELLS; i++) {
+            decoder.getIn(i).addConnection(write);
+            selector.getOut(i).addConnection(out);
+        }
+
+        for (int i = 0; i < ADDRESS_SIZE / ADDRESS_PARTS; i++) {
+            address[i] = new Pin(this);
+            address[i].addConnection(decoder.getAddress(i));
+            address[i].addConnection(selector.getAddress(i));
+        }
+
+        for (int i = ADDRESS_SIZE / ADDRESS_PARTS; i < ADDRESS_SIZE; i++) {
+            address[i] = new Pin(this);
+        }
+
         SixteenWordCell[] cells = new SixteenWordCell[NUMBER_OF_CELLS];
 
         for (int i = 0; i < NUMBER_OF_CELLS; i++) {
@@ -34,22 +49,9 @@ public class TwoFiftySixWordCell extends Component {
             cells[i].getOut().addConnection(selector.getIn(i));
 
             for (int j = ADDRESS_SIZE / ADDRESS_PARTS; j < ADDRESS_SIZE; j++) {
-                address[j] = new Pin(this);
                 cells[i].getAddress(j - ADDRESS_SIZE / ADDRESS_PARTS).addConnection(address[j]);
             }
         }
-
-        for (int i = 0; i < ADDRESS_SIZE / ADDRESS_PARTS; i++) {
-            address[i] = new Pin(this);
-            address[i].addConnection(decoder.getAddress(i));
-            address[i].addConnection(selector.getAddress(i));
-        }
-
-        for (int i = 0; i < BITS_PER_CELL; i++) {
-            decoder.getIn(i).addConnection(write);
-            selector.getOut(i).addConnection(out);
-        }
-
     }
     public Pin getAddress(int i) {
         return address[i];

@@ -27,12 +27,8 @@ public class Light extends Component {
         super.doCycle();
         state = input.getState();
     }
-    public void showState() {
-        if (state) {
-            System.out.println("Light is ON");
-        } else {
-            System.out.println("Light is OFF");
-        }
+    public boolean getState() {
+        return state;
     }
     public Pin getInput() {
         return input;
