@@ -1,16 +1,16 @@
 public class Adder extends Component {
-    protected final Pin inOne;
-    protected final Pin inTwo;
-    protected final Pin carryIn;
-    protected final Pin supply;
-    protected final Pin sumOut;
-    protected final Pin carryOut;
+    private final Pin inOne;
+    private final Pin inTwo;
+    private final Pin carryIn;
+    private final Pin supply;
+    private final Pin sumOut;
+    private final Pin carryOut;
     private static class HalfAdder extends Component{
-        protected final Pin inOne;
-        protected final Pin inTwo;
-        protected final Pin supply;
-        protected final Pin sumOut;
-        protected final Pin carryOut;
+        private final Pin inOne;
+        private final Pin inTwo;
+        private final Pin supply;
+        private final Pin sumOut;
+        private final Pin carryOut;
         private HalfAdder() {
             inOne = new Pin(this);
             inTwo = new Pin(this);

@@ -1,11 +1,11 @@
 public class EdgeFlipFlopWithClear extends Component{
-    protected final Pin preset;
-    protected final Pin clear;
-    protected final Pin clock;
-    protected final Pin data;
-    protected final Pin supply;
-    protected final Pin out;
-    protected final Pin oppositeOut;
+    private final Pin preset;
+    private final Pin clear;
+    private final Pin clock;
+    private final Pin data;
+    private final Pin supply;
+    private final Pin out;
+    private final Pin oppositeOut;
     private static class ThreeInputNOR extends Component{
         private final Pin inOne;
         private final Pin inTwo;
@@ -81,6 +81,12 @@ public class EdgeFlipFlopWithClear extends Component{
 
         out.addConnection(norGates[4].out);
         oppositeOut.addConnection(norGates[5].out);
+    }
+    public Pin getPreset() {
+        return preset;
+    }
+    public Pin getClear() {
+        return clear;
     }
     public Pin getClock() {
         return clock;

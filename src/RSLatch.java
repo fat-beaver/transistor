@@ -1,9 +1,9 @@
 public class RSLatch extends Component {
-    protected final Pin set;
-    protected final Pin reset;
-    protected final Pin supply;
-    protected final Pin out;
-    protected final Pin oppositeOut;
+    private final Pin set;
+    private final Pin reset;
+    private final Pin supply;
+    private final Pin out;
+    private final Pin oppositeOut;
     public RSLatch() {
         set = new Pin(this);
         reset = new Pin(this);

@@ -1,8 +1,8 @@
 public class BinaryCounter extends Component {
     public static final int WORD_SIZE = 8;
-    protected final Pin clock;
-    protected final Pin supply;
-    protected final Pin[] outputs;
+    private final Pin clock;
+    private final Pin supply;
+    private final Pin[] outputs;
     public BinaryCounter() {
         clock = new Pin(this);
         supply = new Pin(this);

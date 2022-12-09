@@ -66,31 +66,35 @@ public class Testing {
 
         supply = new SupplyPin();
 
-        Switch switchOne = new Switch();
-        components.add(switchOne);
-        switches.add(switchOne);
-        switchOne.getIn().addConnection(supply);
+        Switch inputSwitch = new Switch();
+        components.add(inputSwitch);
+        switches.add(inputSwitch);
+        inputSwitch.getIn().addConnection(supply);
 
-        Switch switchTwo = new Switch();
-        components.add(switchTwo);
-        switches.add(switchTwo);
-        switchTwo.getIn().addConnection(supply);
+        Switch clockSwitch = new Switch();
+        components.add(clockSwitch);
+        switches.add(clockSwitch);
+        clockSwitch.getIn().addConnection(supply);
 
-        Light lightOne = new Light();
-        components.add(lightOne);
-        lights.add(lightOne);
+        Light outputLight = new Light();
+        components.add(outputLight);
+        lights.add(outputLight);
 
-        Light lightTwo = new Light();
-        components.add(lightTwo);
-        lights.add(lightTwo);
+        MemoryByte memoryByte = new MemoryByte();
+        components.add(memoryByte);
+        memoryByte.getSupply().addConnection(supply);
+        memoryByte.getIn().addConnection(inputSwitch.getOut());
+        memoryByte.getWrite().addConnection(clockSwitch.getOut());
+        memoryByte.getOut().addConnection(outputLight.getInput());
 
-        Adder adder = new Adder();
-        components.add(adder);
-        adder.getSupply().addConnection(supply);
-        adder.getInOne().addConnection(switchOne.getOut());
-        adder.getInTwo().addConnection(switchTwo.getOut());
-        adder.getSumOut().addConnection(lightOne.getInput());
-        adder.getCarryOut().addConnection(lightTwo.getInput());
+        Switch[] addressSwitches = new Switch[MemoryByte.ADDRESS_SIZE];
+        for (int i = 0; i < MemoryByte.ADDRESS_SIZE; i++) {
+            addressSwitches[i] = new Switch();
+            components.add(addressSwitches[i]);
+            addressSwitches[i].getIn().addConnection(supply);
+            addressSwitches[i].getOut().addConnection(memoryByte.getAddress(i));
+        }
+
         input.start();
 
         while (running) {

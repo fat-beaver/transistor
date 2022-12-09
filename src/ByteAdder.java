@@ -1,12 +1,12 @@
 public class ByteAdder extends Component{
     public static final int WORD_SIZE = 8;
-    protected final Pin[] oneInputs;
-    protected final Pin[] twoInputs;
-    protected final Pin[] sumOutputs;
-    protected final Pin carryIn;
-    protected final Pin carryOut;
-    protected final Pin supply;
-    protected final Adder[] adders;
+    private final Pin[] oneInputs;
+    private final Pin[] twoInputs;
+    private final Pin[] sumOutputs;
+    private final Pin carryIn;
+    private final Pin carryOut;
+    private final Pin supply;
+    private final Adder[] adders;
     public ByteAdder() {
         oneInputs = new Pin[WORD_SIZE];
         twoInputs = new Pin[WORD_SIZE];

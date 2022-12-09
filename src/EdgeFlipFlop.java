@@ -1,9 +1,9 @@
 public class EdgeFlipFlop extends Component {
-    protected final Pin clock;
-    protected final Pin data;
-    protected final Pin supply;
-    protected final Pin out;
-    protected final Pin oppositeOut;
+    private final Pin clock;
+    private final Pin data;
+    private final Pin supply;
+    private final Pin out;
+    private final Pin oppositeOut;
     public EdgeFlipFlop() {
         clock = new Pin(this);
         data = new Pin(this);
