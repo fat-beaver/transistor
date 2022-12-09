@@ -48,38 +48,24 @@ public class Startup {
     private void setUpComponents(Container pane, GridBagConstraints constraints) {
         SupplyPin supply = new SupplyPin();
 
-        constraints.gridx = 0;
-        constraints.gridy = 3;
-        pane.add(new JLabel("Result"), constraints);
-        constraints.gridy = 0;
-        pane.add(new JLabel("Significance"), constraints);
-
         Adder lastAdder = null;
         for (int i = 0; i < WORD_SIZE; i++) {
 
-            constraints.gridx = WORD_SIZE - i;
-            constraints.gridy = 0;
-            pane.add(new JLabel(String.valueOf(i)), constraints);
-
-            constraints.gridx = 0;
             constraints.gridy = 1;
-            pane.add(new JLabel("Number #1"), constraints);
             Switch topSwitch = new Switch();
             components.add(topSwitch);
             topSwitch.getIn().addConnection(supply);
             constraints.gridx = WORD_SIZE - i;
             pane.add(topSwitch.getVisuals(), constraints);
 
-            constraints.gridx = 0;
             constraints.gridy = 2;
-            pane.add(new JLabel("Number #2"), constraints);
             Switch bottomSwitch = new Switch();
             components.add(bottomSwitch);
             bottomSwitch.getIn().addConnection(supply);
             constraints.gridx = WORD_SIZE - i;
             pane.add(bottomSwitch.getVisuals(), constraints);
 
-            constraints.gridy = 4;
+            constraints.gridy = 3;
             Light light = new Light();
             components.add(light);
             constraints.gridx = WORD_SIZE - i;
@@ -101,13 +87,7 @@ public class Startup {
         lastAdder.getCarryOut().addConnection(carryLight.getInput());
 
         constraints.gridx = 0;
-        constraints.gridy = 4;
-        pane.add(carryLight.getVisuals(), constraints);
-
         constraints.gridy = 3;
-        constraints.gridx = WORD_SIZE;
-        JButton stopButton = new JButton("Compute");
-        stopButton.addActionListener(actionEvent -> System.out.println("STOP"));
-        pane.add(stopButton, constraints);
+        pane.add(carryLight.getVisuals(), constraints);
     }
 }

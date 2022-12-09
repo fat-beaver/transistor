@@ -19,7 +19,6 @@ public class Light extends Component {
                 }
                 g.fillOval(0, 0, 50, 50);
                 setPreferredSize(new Dimension(50, 50));
-                //System.out.println("Drew a light with state: " + state);
             }
         };
     }
