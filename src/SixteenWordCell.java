@@ -1,4 +1,4 @@
-public class SixteenBitCell extends Component{
+public class SixteenWordCell extends Component{
     public static final int NUMBER_OF_BITS = 16;
     public static final int ADDRESS_SIZE = 4; //log base two of the number of values
     private final Pin[] address;
@@ -6,7 +6,7 @@ public class SixteenBitCell extends Component{
     private final Pin write;
     private final Pin supply;
     private final Pin out;
-    public SixteenBitCell() {
+    public SixteenWordCell() {
         address = new Pin[ADDRESS_SIZE];
         in = new Pin(this);
         write = new Pin(this);
@@ -25,8 +25,6 @@ public class SixteenBitCell extends Component{
             decoder.getIn(i).addConnection(write);
             selector.getOut(i).addConnection(out);
         }
-
-
 
         for (int i = 0; i < ADDRESS_SIZE; i++) {
             address[i] = new Pin(this);

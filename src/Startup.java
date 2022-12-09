@@ -78,21 +78,21 @@ public class Startup {
         constraints.gridy = 3;
         pane.add(outputLight.getVisuals(), constraints);
 
-        SixteenBitCell eightBitCell = new SixteenBitCell();
-        components.add(eightBitCell);
-        eightBitCell.getSupply().addConnection(supply);
-        eightBitCell.getIn().addConnection(inputSwitch.getOut());
-        eightBitCell.getWrite().addConnection(clockSwitch.getOut());
-        eightBitCell.getOut().addConnection(outputLight.getInput());
+        SixteenWordCell cell = new SixteenWordCell();
+        components.add(cell);
+        cell.getSupply().addConnection(supply);
+        cell.getIn().addConnection(inputSwitch.getOut());
+        cell.getWrite().addConnection(clockSwitch.getOut());
+        cell.getOut().addConnection(outputLight.getInput());
 
-        Switch[] addressSwitches = new Switch[SixteenBitCell.ADDRESS_SIZE];
+        Switch[] addressSwitches = new Switch[SixteenWordCell.ADDRESS_SIZE];
         constraints.gridy = 0;
-        for (int i = 0; i < SixteenBitCell.ADDRESS_SIZE; i++) {
+        for (int i = 0; i < SixteenWordCell.ADDRESS_SIZE; i++) {
             addressSwitches[i] = new Switch();
             components.add(addressSwitches[i]);
             addressSwitches[i].getIn().addConnection(supply);
-            addressSwitches[i].getOut().addConnection(eightBitCell.getAddress(i));
-            constraints.gridx = SixteenBitCell.ADDRESS_SIZE - i;
+            addressSwitches[i].getOut().addConnection(cell.getAddress(i));
+            constraints.gridx = SixteenWordCell.ADDRESS_SIZE - i;
             pane.add(addressSwitches[i].getVisuals(), constraints);
         }
     }
