@@ -1,5 +1,5 @@
 public class SixteenBitLatch extends Component {
-    public static final int WORD_LENGTH = 8;
+    public static final int WORD_LENGTH = 16;
     private final Pin[] in;
     private final Pin clock;
     private final Pin clear;

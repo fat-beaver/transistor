@@ -1,5 +1,5 @@
 public class SixteenBitAdder extends Component{
-    public static final int WORD_SIZE = 8;
+    public static final int WORD_SIZE = 16;
     private final Pin[] oneInputs;
     private final Pin[] twoInputs;
     private final Pin[] sumOutputs;
