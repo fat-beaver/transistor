@@ -1,4 +1,4 @@
-public class SixteenWordCell extends Component{
+public class SixteenBitCell extends Component{
     public static final int NUMBER_OF_BITS = 16;
     public static final int ADDRESS_SIZE = 4; //log base two of the number of values
     private final Pin[] address;
@@ -6,7 +6,7 @@ public class SixteenWordCell extends Component{
     private final Pin write;
     private final Pin supply;
     private final Pin out;
-    public SixteenWordCell() {
+    public SixteenBitCell() {
         address = new Pin[ADDRESS_SIZE];
         in = new Pin(this);
         write = new Pin(this);
