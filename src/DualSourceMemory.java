@@ -62,8 +62,8 @@ public class DualSourceMemory extends Component {
         writeSelector.getInOne().addConnection(writeOne);
         writeSelector.getInTwo().addConnection(writeTwo);
         writeSelector.getOut().addConnection(cell.getWrite());
-        //performance
-        cell.getSupply().addWithoutCheck(supply);
+
+        cell.getSupply().addWithoutCheck(supply); //speeds up running by ~25%
     }
     public Pin getWordOne(int i) {
         return wordOne[i];
