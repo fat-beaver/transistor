@@ -14,7 +14,6 @@ public class Pin {
         checkState();
     }
     public boolean getState() {
-        checkState();
         return state;
     }
     public void addConnection(Pin connection) {
