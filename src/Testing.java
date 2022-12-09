@@ -75,42 +75,6 @@ public class Testing {
 
         SupplyPin supply = new SupplyPin();
 
-        TwoFiftySixWordCell cell = new TwoFiftySixWordCell();
-        subComponents.add(cell);
-        cell.getSupply().addConnection(supply);
-
-        Switch[] addressSwitches = new Switch[TwoFiftySixWordCell.ADDRESS_SIZE];
-        for (int i = 0; i < TwoFiftySixWordCell.ADDRESS_SIZE; i++) {
-            addressSwitches[i] = new Switch();
-            subComponents.add(addressSwitches[i]);
-            addressSwitches[i].getIn().addConnection(supply);
-            addressSwitches[i].getOut().addConnection(cell.getAddress(i));
-            switches.add(addressSwitches[i]);
-        }
-
-        Switch[] inputSwitches = new Switch[TwoFiftySixWordCell.WORD_SIZE];
-        Light[] outputLights = new Light[TwoFiftySixWordCell.WORD_SIZE];
-
-        for (int i = 0; i < TwoFiftySixWordCell.WORD_SIZE; i++) {
-            inputSwitches[i] = new Switch();
-            subComponents.add(inputSwitches[i]);
-            inputSwitches[i].getIn().addConnection(supply);
-            inputSwitches[i].getOut().addConnection(cell.getIn());
-
-            outputLights[i] = new Light();
-            subComponents.add(outputLights[i]);
-            outputLights[i].getInput().addConnection(cell.getOut());
-            lights.add(outputLights[i]);
-        }
-
-        Switch saveSwitch = new Switch();
-        subComponents.add(saveSwitch);
-        saveSwitch.getIn().addConnection(supply);
-        saveSwitch.getOut().addConnection(cell.getWrite());
-
-        switches.add(inputSwitches[0]);
-        switches.add(saveSwitch);
-
 
 
         System.out.println(System.nanoTime() - startTime);
