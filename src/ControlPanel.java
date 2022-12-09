@@ -75,7 +75,7 @@ public class ControlPanel extends Component {
             subComponents.add(addressSwitches[i]);
             addressSwitches[i].getIn().addWithoutCheck(supply);
             addressSwitches[i].getOut().addConnection(address[i]);
-            constraints.gridx = addressSize - i;
+            constraints.gridx = Math.max(wordSize, addressSize) - i;
             pane.add(addressSwitches[i].getVisuals(), constraints);
         }
 
