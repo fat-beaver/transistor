@@ -8,8 +8,6 @@ public class Startup {
     private static final int TIME_PER_FRAME = 10;
     private static final int PADDING = 2;
 
-    private static final int WORD_SIZE = 8;
-
     ArrayList<Component> components = new ArrayList<>();
 
     public static void main(String[] args) {
@@ -48,43 +46,37 @@ public class Startup {
     private void setUpComponents(Container pane, GridBagConstraints constraints) {
         SupplyPin supply = new SupplyPin();
 
-        Adder lastAdder = null;
-        for (int i = 0; i < WORD_SIZE; i++) {
+        ByteAdder byteAdder = new ByteAdder();
+        components.add(byteAdder);
+        byteAdder.getSupply().addConnection(supply);
 
+        for (int i = 0; i < ByteAdder.WORD_SIZE; i++) {
             constraints.gridy = 1;
             Switch topSwitch = new Switch();
             components.add(topSwitch);
             topSwitch.getIn().addConnection(supply);
-            constraints.gridx = WORD_SIZE - i;
+            topSwitch.getOut().addConnection(byteAdder.getInOne(i));
+            constraints.gridx = ByteAdder.WORD_SIZE + 1 - i;
             pane.add(topSwitch.getVisuals(), constraints);
 
             constraints.gridy = 2;
             Switch bottomSwitch = new Switch();
             components.add(bottomSwitch);
             bottomSwitch.getIn().addConnection(supply);
-            constraints.gridx = WORD_SIZE - i;
+            bottomSwitch.getOut().addConnection(byteAdder.getInTwo(i));
+            constraints.gridx = ByteAdder.WORD_SIZE + 1 - i;
             pane.add(bottomSwitch.getVisuals(), constraints);
 
             constraints.gridy = 3;
             Light light = new Light();
             components.add(light);
-            constraints.gridx = WORD_SIZE - i;
+            light.getInput().addConnection(byteAdder.getSumOut(i));
+            constraints.gridx = ByteAdder.WORD_SIZE + 1 - i;
             pane.add(light.getVisuals(), constraints);
-
-            Adder adder = new Adder();
-            components.add(adder);
-            adder.getSupply().addConnection(supply);
-            adder.getInOne().addConnection(topSwitch.getOut());
-            adder.getInTwo().addConnection(bottomSwitch.getOut());
-            adder.getSumOut().addConnection(light.getInput());
-            if (i != 0) {
-                adder.getCarryIn().addConnection(lastAdder.getCarryOut());
-            }
-            lastAdder = adder;
         }
         Light carryLight = new Light();
         components.add(carryLight);
-        lastAdder.getCarryOut().addConnection(carryLight.getInput());
+        byteAdder.getCarryOut().addConnection(carryLight.getInput());
 
         constraints.gridx = 0;
         constraints.gridy = 3;
