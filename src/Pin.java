@@ -39,10 +39,18 @@ public class Pin {
         if (connectionNetwork.contains(connection)) {
             System.out.println("pin is already part of this network! (this is a bug)");
         } else {
-            ArrayList<Pin> tempPins = new ArrayList<>(connection.connectionNetwork);
-            for (Pin pin : tempPins) {
-                connectionNetwork.add(pin);
-                pin.connectionNetwork = connectionNetwork;
+            if (connectionNetwork.size() > connection.connectionNetwork.size()) {
+                ArrayList<Pin> tempPins = new ArrayList<>(connection.connectionNetwork);
+                for (Pin pin : tempPins) {
+                    connectionNetwork.add(pin);
+                    pin.connectionNetwork = connectionNetwork;
+                }
+            } else {
+                ArrayList<Pin> tempPins = new ArrayList<>(connectionNetwork);
+                for (Pin pin : tempPins) {
+                    connection.connectionNetwork.add(pin);
+                    pin.connectionNetwork = connection.connectionNetwork;
+                }
             }
         }
     }
