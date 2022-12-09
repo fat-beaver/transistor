@@ -1,112 +1,99 @@
+import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Startup {
-    boolean running = true;
-    ArrayList<Switch> switches = new ArrayList<>();
-    ArrayList<Light> lights = new ArrayList<>();
+    private static final int WINDOW_WIDTH = 1920;
+    private static final int WINDOW_HEIGHT = 1080;
+    private static final int TIME_PER_FRAME = 10;
+    private static final int PADDING = 2;
+
+    private static final int WORD_SIZE = 8;
+
     ArrayList<Component> components = new ArrayList<>();
+
     public static void main(String[] args) {
-        new Startup();
+        SwingUtilities.invokeLater(Startup::new);
     }
     public Startup() {
-        Thread input = new Thread(() -> {
-            Scanner input1 = new Scanner(System.in);
-            while (running) {
-                String userInput = input1.nextLine();
-                String[] userInputParts = userInput.toLowerCase().split(" ");
-                switch (userInputParts[0]) {
-                    case "stop":
-                        running = false;
-                        break;
-                    case "switch":
-                        if (userInputParts.length != 2) {
-                            System.out.println("incorrect number of arguments");
-                        } else {
-                            try {
-                                int switchID = Integer.parseInt(userInputParts[1]);
-                                if (switches.size() <= switchID) {
-                                    System.out.println("Switch ID out of bounds");
-                                } else {
-                                    switches.get(switchID).flip();
-                                    System.out.println("flipped switch");
-                                }
-                            } catch (NumberFormatException e) {
-                                System.out.println("argument must be a number");
-                            }
-                        }
-                        break;
-                    case "light":
-                        if (userInputParts.length != 2) {
-                            System.out.println("incorrect number of arguments");
-                        } else {
-                            try {
-                                int lightID = Integer.parseInt(userInputParts[1]);
-                                if (lights.size() <= lightID) {
-                                    System.out.println("Light ID out of bounds");
-                                } else {
-                                    lights.get(lightID).showState();
-                                }
-                            } catch (NumberFormatException e) {
-                                System.out.println("argument must be a number");
-                            }
-                        }
-                        break;
-                    default:
-                        System.out.println("command not found");
-                        break;
-                }
-            }
-        });
-        setUpComponents();
+        JFrame window = new JFrame();
 
-        input.start();
+        Timer cycleTimer = new Timer(TIME_PER_FRAME, actionEvent -> SwingUtilities.invokeLater(() -> {
+            for (Component component : components) {component.doCycle();}
+            window.repaint();
+        }));
+        cycleTimer.setRepeats(true);
 
-        while (running) {
-            for (Component component : components) {
-                component.doCycle();
-            }
-        }
+
+        window.setTitle("transistor");
+        window.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
+        window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        Container pane = window.getContentPane();
+        GridBagConstraints constraints = new GridBagConstraints();
+        pane.setLayout(new GridBagLayout());
+        constraints.anchor = GridBagConstraints.FIRST_LINE_START;
+        constraints.fill = GridBagConstraints.BOTH;
+        constraints.weightx = 1;
+        constraints.weighty = 1;
+        constraints.insets = new Insets(PADDING, PADDING, PADDING, PADDING);
+        setUpComponents(pane, constraints);
+
+        window.pack();
+        window.toFront();
+        window.setVisible(true);
+
+        cycleTimer.start();
     }
-    private void setUpComponents() {
-        //create the parts
-        Light lightOne = new Light();
-        lights.add(lightOne);
-        components.add(lightOne);
-
-        Light lightTwo = new Light();
-        lights.add(lightTwo);
-        components.add(lightTwo);
-
+    private void setUpComponents(Container pane, GridBagConstraints constraints) {
         SupplyPin supply = new SupplyPin();
 
-        Switch switchOne = new Switch();
-        switches.add(switchOne);
-        components.add(switchOne);
+        constraints.gridx = 0;
+        constraints.gridy = 3;
+        pane.add(new JLabel("Result"), constraints);
+        constraints.gridy = 0;
+        pane.add(new JLabel("Significance"), constraints);
 
-        Switch switchTwo = new Switch();
-        switches.add(switchTwo);
-        components.add(switchTwo);
+        for (int i = 0; i < WORD_SIZE; i++) {
 
-        OrGate orGate = new OrGate();
-        components.add(orGate);
+            constraints.gridx = WORD_SIZE - i;
+            constraints.gridy = 0;
+            pane.add(new JLabel(String.valueOf(i)), constraints);
 
-        AndGate andGate = new AndGate();
-        components.add(andGate);
+            constraints.gridx = 0;
+            constraints.gridy = 1;
+            pane.add(new JLabel("Number #1"), constraints);
+            Switch topSwitch = new Switch();
+            components.add(topSwitch);
+            topSwitch.getIn().addConnection(supply);
+            constraints.gridx = WORD_SIZE - i;
+            pane.add(topSwitch.getVisuals(), constraints);
 
-        //connect them together
-        switchOne.getIn().addConnection(supply);
-        switchOne.getOut().addConnection(orGate.getInputOne());
-        switchOne.getOut().addConnection(andGate.getInputOne());
+            constraints.gridx = 0;
+            constraints.gridy = 2;
+            pane.add(new JLabel("Number #2"), constraints);
+            Switch bottomSwitch = new Switch();
+            components.add(bottomSwitch);
+            bottomSwitch.getIn().addConnection(supply);
+            constraints.gridx = WORD_SIZE - i;
+            pane.add(bottomSwitch.getVisuals(), constraints);
 
-        switchTwo.getIn().addConnection(supply);
-        switchTwo.getOut().addConnection(orGate.getInputTwo());
-        switchTwo.getOut().addConnection(andGate.getInputTwo());
+            constraints.gridy = 4;
+            Light light = new Light();
+            components.add(light);
+            constraints.gridx = WORD_SIZE - i;
+            pane.add(light.getVisuals(), constraints);
 
-        orGate.getSupply().addConnection(supply);
-        orGate.getOutput().addConnection(lightOne.getInput());
+            AndGate andGate = new AndGate();
+            components.add(andGate);
+            andGate.getSupply().addConnection(supply);
+            andGate.getOutput().addConnection(light.getInput());
+            andGate.getInputOne().addConnection(topSwitch.getOut());
+            andGate.getInputTwo().addConnection(bottomSwitch.getOut());
+        }
 
-        andGate.getSupply().addConnection(supply);
-        andGate.getOutput().addConnection(lightTwo.getInput());
+        constraints.gridy = 3;
+        constraints.gridx = WORD_SIZE;
+        pane.add(new JButton("Compute"), constraints);
     }
 }

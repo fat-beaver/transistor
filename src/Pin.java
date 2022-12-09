@@ -1,9 +1,9 @@
 import java.util.ArrayList;
 
 public class Pin {
-    private boolean state = false;
-    private boolean powered = false;
-    private ArrayList<Pin> connectionNetwork = new ArrayList<>();
+    protected boolean state = false;
+    protected boolean powered = false;
+    protected ArrayList<Pin> connectionNetwork = new ArrayList<>();
     public Pin() {
         connectionNetwork.add(this);
     }
@@ -12,6 +12,7 @@ public class Pin {
         checkState();
     }
     public boolean getState() {
+        checkState();
         return state;
     }
     public void addConnection(Pin connection) {
@@ -23,7 +24,7 @@ public class Pin {
         }
         checkState();
     }
-    private void checkState() {
+    protected void checkState() {
         boolean connectedHasPower = false;
         for (Pin pin : connectionNetwork) {
             if (pin.powered) {

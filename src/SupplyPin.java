@@ -1,6 +1,8 @@
 public class SupplyPin extends Pin {
     public SupplyPin() {
         super();
-        set(true);
+        powered = true;
     }
+    @Override
+    public void set(boolean ignored) {}
 }
