@@ -1,0 +1,4 @@
+*.iml
+out/production
+.idea/*
+*.pdf
