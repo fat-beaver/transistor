@@ -64,36 +64,7 @@ public class Testing {
             }
         });
 
-        supply = new SupplyPin();
 
-        Switch inputSwitch = new Switch();
-        components.add(inputSwitch);
-        switches.add(inputSwitch);
-        inputSwitch.getIn().addConnection(supply);
-
-        Switch clockSwitch = new Switch();
-        components.add(clockSwitch);
-        switches.add(clockSwitch);
-        clockSwitch.getIn().addConnection(supply);
-
-        Light outputLight = new Light();
-        components.add(outputLight);
-        lights.add(outputLight);
-
-        MemoryByte memoryByte = new MemoryByte();
-        components.add(memoryByte);
-        memoryByte.getSupply().addConnection(supply);
-        memoryByte.getIn().addConnection(inputSwitch.getOut());
-        memoryByte.getWrite().addConnection(clockSwitch.getOut());
-        memoryByte.getOut().addConnection(outputLight.getInput());
-
-        Switch[] addressSwitches = new Switch[MemoryByte.ADDRESS_SIZE];
-        for (int i = 0; i < MemoryByte.ADDRESS_SIZE; i++) {
-            addressSwitches[i] = new Switch();
-            components.add(addressSwitches[i]);
-            addressSwitches[i].getIn().addConnection(supply);
-            addressSwitches[i].getOut().addConnection(memoryByte.getAddress(i));
-        }
 
         input.start();
 

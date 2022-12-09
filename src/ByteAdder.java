@@ -6,7 +6,6 @@ public class ByteAdder extends Component{
     private final Pin carryIn;
     private final Pin carryOut;
     private final Pin supply;
-    private final Adder[] adders;
     public ByteAdder() {
         oneInputs = new Pin[WORD_SIZE];
         twoInputs = new Pin[WORD_SIZE];
@@ -14,7 +13,8 @@ public class ByteAdder extends Component{
         carryIn = new Pin(this);
         carryOut = new Pin(this);
         supply = new Pin(this);
-        adders = new Adder[WORD_SIZE];
+
+        Adder[] adders = new Adder[WORD_SIZE];
 
         for (int i = 0; i < WORD_SIZE; i++) {
             oneInputs[i] = new Pin(this);
