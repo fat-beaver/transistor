@@ -16,7 +16,7 @@ public class EightBitCounter extends Component {
             outputs[i] = new Pin(this);
             flipFlops[i] = new EdgeFlipFlopWithClear();
             subComponents.add(flipFlops[i]);
-            flipFlops[i].getSupply().addConnection(supply);
+            flipFlops[i].getSupply().addWithoutCheck(supply);
             flipFlops[i].getOut().addConnection(outputs[i]);
             flipFlops[i].getOppositeOut().addConnection(flipFlops[i].getData());
             flipFlops[i].getClear().addConnection(clear);

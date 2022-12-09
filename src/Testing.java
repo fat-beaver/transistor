@@ -78,18 +78,18 @@ public class Testing {
 
         SixteenBitLatch latch = new SixteenBitLatch();
         subComponents.add(latch);
-        latch.getSupply().addConnection(supply);
+        latch.getSupply().addWithoutCheck(supply);
 
         Switch clockSwitch = new Switch();
         subComponents.add(clockSwitch);
         switches.add(clockSwitch);
-        clockSwitch.getIn().addConnection(supply);
+        clockSwitch.getIn().addWithoutCheck(supply);
         clockSwitch.getOut().addConnection(latch.getClock());
         for (int i = 0; i < SixteenBitLatch.WORD_LENGTH; i++) {
             Switch inputSwitch = new Switch();
             subComponents.add(inputSwitch);
             switches.add(inputSwitch);
-            inputSwitch.getIn().addConnection(supply);
+            inputSwitch.getIn().addWithoutCheck(supply);
             inputSwitch.getOut().addConnection(latch.getIn(i));
 
             Light outputLight = new Light();

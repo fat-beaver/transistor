@@ -17,15 +17,7 @@ public class Pin {
         return state;
     }
     public void addConnection(Pin connection) {
-        if (connectionNetwork.contains(connection)) {
-            System.out.println("pin is already part of this network! (this is a bug)");
-        } else {
-            ArrayList<Pin> tempPins = new ArrayList<>(connection.connectionNetwork);
-            for (Pin pin : tempPins) {
-                connectionNetwork.add(pin);
-                pin.connectionNetwork = connectionNetwork;
-            }
-        }
+        addWithoutCheck(connection);
         checkState();
     }
     protected void checkState() {
@@ -42,5 +34,16 @@ public class Pin {
     }
     protected void forceSet(boolean state) {
         this.state = state;
+    }
+    protected void addWithoutCheck(Pin connection) {
+        if (connectionNetwork.contains(connection)) {
+            System.out.println("pin is already part of this network! (this is a bug)");
+        } else {
+            ArrayList<Pin> tempPins = new ArrayList<>(connection.connectionNetwork);
+            for (Pin pin : tempPins) {
+                connectionNetwork.add(pin);
+                pin.connectionNetwork = connectionNetwork;
+            }
+        }
     }
 }

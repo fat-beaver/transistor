@@ -25,7 +25,7 @@ public class TwoFiftySixByteCell extends Component {
 
             cells[i] = new TwoFiftySixWordCell();
             subComponents.add(cells[i]);
-            cells[i].getSupply().addConnection(supply);
+            cells[i].getSupply().addWithoutCheck(supply);
 
             for (int j = 0; j < ADDRESS_SIZE; j++) {
                 cells[i].getAddress(j).addConnection(address[j]);

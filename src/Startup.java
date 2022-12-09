@@ -57,50 +57,51 @@ public class Startup extends Component{
 
         Oscillator clock = new Oscillator();
         subComponents.add(clock);
-        clock.getSupply().addConnection(supply);
+        clock.getSupply().addWithoutCheck(supply);
 
-        TwoFiftySixByteCell cell = new TwoFiftySixByteCell();
-        subComponents.add(cell);
-        cell.getSupply().addConnection(supply);
+        DualSourceMemory workingMemory = new DualSourceMemory();
+        subComponents.add(workingMemory);
+        workingMemory.getSupply().addWithoutCheck(supply);
 
         ControlPanel controlPanel = new ControlPanel(pane, constraints, TwoFiftySixByteCell.ADDRESS_SIZE, TwoFiftySixByteCell.WORD_SIZE);
         subComponents.add(controlPanel);
-        controlPanel.getSupply().addConnection(supply);
-
-        cell.getWrite().addConnection(controlPanel.getWriteOut());
+        controlPanel.getSupply().addWithoutCheck(supply);
+        controlPanel.getWrite().addConnection(workingMemory.getWriteTwo());
+        controlPanel.getOverride().addConnection(workingMemory.getSelect());
 
         for (int i = 0; i < TwoFiftySixByteCell.ADDRESS_SIZE; i++) {
-            cell.getAddress(i).addConnection(controlPanel.getAddressOut(i));
+            workingMemory.getAddressTwo(i).addConnection(controlPanel.getAddress(i));
         }
         for (int i = 0; i < TwoFiftySixByteCell.WORD_SIZE; i++) {
-            cell.getIn(i).addConnection(controlPanel.getWordOut(i));
+            workingMemory.getWordTwo(i).addConnection(controlPanel.getWord(i));
         }
 
         EightBitCounter addressCounter = new EightBitCounter();
         subComponents.add(addressCounter);
-        addressCounter.getSupply().addConnection(supply);
+        addressCounter.getSupply().addWithoutCheck(supply);
         addressCounter.getClear().addConnection(controlPanel.getClear());
         addressCounter.getClock().addConnection(clock.getOut());
         for (int i = 0; i < TwoFiftySixByteCell.ADDRESS_SIZE; i++) {
-            addressCounter.getOutput(i).addConnection(cell.getAddress(i));
+            addressCounter.getOutput(i).addConnection(workingMemory.getAddressTwo(i));
         }
 
         SixteenBitAdder adder = new SixteenBitAdder();
         subComponents.add(adder);
-        adder.getSupply().addConnection(supply);
+        adder.getSupply().addWithoutCheck(supply);
         adder.getCarryOut().addConnection(controlPanel.getError());
 
         SixteenBitLatch latch = new SixteenBitLatch();
         subComponents.add(latch);
-        latch.getSupply().addConnection(supply);
+        latch.getSupply().addWithoutCheck(supply);
         latch.getClear().addConnection(controlPanel.getClear());
         latch.getClock().addConnection(clock.getOut());
 
         for (int i = 0; i < TwoFiftySixByteCell.WORD_SIZE; i++) {
-            adder.getInOne(i).addConnection(cell.getOut(i));
+            adder.getInOne(i).addConnection(workingMemory.getWordOut(i));
             adder.getInTwo(i).addConnection(latch.getOut(i));
             adder.getSumOut(i).addConnection(latch.getIn(i));
             latch.getOut(i).addConnection(controlPanel.getDisplay(i));
         }
+        supply.checkState();
     }
 }

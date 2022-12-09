@@ -17,7 +17,7 @@ public class SixteenBitLatch extends Component {
             out[i] = new Pin(this);
             EdgeFlipFlopWithClear flipFlop = new EdgeFlipFlopWithClear();
             subComponents.add(flipFlop);
-            flipFlop.getSupply().addConnection(supply);
+            flipFlop.getSupply().addWithoutCheck(supply);
             flipFlop.getData().addConnection(in[i]);
             flipFlop.getOut().addConnection(out[i]);
             flipFlop.getClock().addConnection(clock);

@@ -20,14 +20,14 @@ public class Adder extends Component {
 
             XORGate xorGate = new XORGate();
             subComponents.add(xorGate);
-            xorGate.getSupply().addConnection(supply);
+            xorGate.getSupply().addWithoutCheck(supply);
             xorGate.getInputOne().addConnection(inOne);
             xorGate.getInputTwo().addConnection(inTwo);
             xorGate.getOutput().addConnection(sumOut);
 
             ANDGate andGate = new ANDGate();
             subComponents.add(andGate);
-            andGate.getSupply().addConnection(supply);
+            andGate.getSupply().addWithoutCheck(supply);
             andGate.getInputOne().addConnection(inOne);
             andGate.getInputTwo().addConnection(inTwo);
             andGate.getOutput().addConnection(carryOut);
@@ -43,20 +43,20 @@ public class Adder extends Component {
 
         HalfAdder adderOne = new HalfAdder();
         subComponents.add(adderOne);
-        adderOne.supply.addConnection(supply);
+        adderOne.supply.addWithoutCheck(supply);
         adderOne.inOne.addConnection(inOne);
         adderOne.inTwo.addConnection(inTwo);
 
         HalfAdder adderTwo = new HalfAdder();
         subComponents.add(adderTwo);
-        adderTwo.supply.addConnection(supply);
+        adderTwo.supply.addWithoutCheck(supply);
         adderTwo.inOne.addConnection(carryIn);
         adderTwo.inTwo.addConnection(adderOne.sumOut);
         adderTwo.sumOut.addConnection(sumOut);
 
         ORGate orGate = new ORGate();
         subComponents.add(orGate);
-        orGate.getSupply().addConnection(supply);
+        orGate.getSupply().addWithoutCheck(supply);
         orGate.getInputOne().addConnection(adderOne.carryOut);
         orGate.getInputTwo().addConnection(adderTwo.carryOut);
         orGate.getOutput().addConnection(carryOut);

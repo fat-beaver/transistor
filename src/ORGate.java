@@ -8,8 +8,8 @@ public class ORGate extends LogicGate {
         Transistor transistorTwo = new Transistor();
         subComponents.add(transistorTwo);
 
-        transistorOne.getCollector().addConnection(supply);
-        transistorTwo.getCollector().addConnection(supply);
+        transistorOne.getCollector().addWithoutCheck(supply);
+        transistorTwo.getCollector().addWithoutCheck(supply);
 
         transistorOne.getBase().addConnection(inOne);
         transistorTwo.getBase().addConnection(inTwo);

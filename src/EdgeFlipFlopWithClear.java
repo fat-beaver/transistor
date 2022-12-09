@@ -21,13 +21,13 @@ public class EdgeFlipFlopWithClear extends Component{
 
             ORGate orGate = new ORGate();
             subComponents.add(orGate);
-            orGate.getSupply().addConnection(supply);
+            orGate.getSupply().addWithoutCheck(supply);
             orGate.getInputOne().addConnection(inOne);
             orGate.getInputTwo().addConnection(inTwo);
 
             NORGate norGate = new NORGate();
             subComponents.add(norGate);
-            norGate.getSupply().addConnection(supply);
+            norGate.getSupply().addWithoutCheck(supply);
             norGate.getInputOne().addConnection(orGate.getOutput());
             norGate.getInputTwo().addConnection(inThree);
             norGate.getOutput().addConnection(out);
@@ -47,12 +47,12 @@ public class EdgeFlipFlopWithClear extends Component{
         for (int i = 0; i < norGates.length; i++) {
             norGates[i] = new ThreeInputNOR();
             subComponents.add(norGates[i]);
-            norGates[i].supply.addConnection(supply);
+            norGates[i].supply.addWithoutCheck(supply);
         }
 
         Inverter clockInverter = new Inverter();
         subComponents.add(clockInverter);
-        clockInverter.getSupply().addConnection(supply);
+        clockInverter.getSupply().addWithoutCheck(supply);
         clockInverter.getIn().addConnection(clock);
 
         norGates[0].inOne.addConnection(clear);

@@ -14,19 +14,19 @@ public class FourInputANDGate extends Component {
 
         ANDGate andOne = new ANDGate();
         subComponents.add(andOne);
-        andOne.getSupply().addConnection(supply);
+        andOne.getSupply().addWithoutCheck(supply);
         andOne.getInputOne().addConnection(inputs[0]);
         andOne.getInputTwo().addConnection(inputs[1]);
 
         ANDGate andTwo = new ANDGate();
         subComponents.add(andTwo);
-        andTwo.getSupply().addConnection(supply);
+        andTwo.getSupply().addWithoutCheck(supply);
         andTwo.getInputOne().addConnection(inputs[2]);
         andTwo.getInputTwo().addConnection(inputs[3]);
 
         ANDGate andThree = new ANDGate();
         subComponents.add(andThree);
-        andThree.getSupply().addConnection(supply);
+        andThree.getSupply().addWithoutCheck(supply);
         andThree.getOutput().addConnection(out);
         andThree.getInputOne().addConnection(andOne.getOutput());
         andThree.getInputTwo().addConnection(andTwo.getOutput());

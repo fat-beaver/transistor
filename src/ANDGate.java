@@ -4,7 +4,7 @@ public class ANDGate extends LogicGate {
 
         Transistor transistorOne = new Transistor();
         subComponents.add(transistorOne);
-        transistorOne.getCollector().addConnection(supply);
+        transistorOne.getCollector().addWithoutCheck(supply);
         transistorOne.getBase().addConnection(inOne);
 
         Transistor transistorTwo = new Transistor();

@@ -19,10 +19,10 @@ public class SixteenBitAddresser extends Component {
             in[i] = new Pin(this);
             fourInputAndGates[i] = new FourInputANDGate();
             subComponents.add(fourInputAndGates[i]);
-            fourInputAndGates[i].getSupply().addConnection(supply);
+            fourInputAndGates[i].getSupply().addWithoutCheck(supply);
             andGates[i] = new ANDGate();
             subComponents.add(andGates[i]);
-            andGates[i].getSupply().addConnection(supply);
+            andGates[i].getSupply().addWithoutCheck(supply);
             andGates[i].getInputOne().addConnection(in[i]);
             andGates[i].getInputTwo().addConnection(fourInputAndGates[i].getOut());
             andGates[i].getOutput().addConnection(outputs[i]);
@@ -34,7 +34,7 @@ public class SixteenBitAddresser extends Component {
             address[i] = new Pin(this);
             addressInverters[i] = new Inverter();
             subComponents.add(addressInverters[i]);
-            addressInverters[i].getSupply().addConnection(supply);
+            addressInverters[i].getSupply().addWithoutCheck(supply);
             addressInverters[i].getIn().addConnection(address[i]);
         }
 

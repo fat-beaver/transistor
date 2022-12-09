@@ -15,11 +15,11 @@ public class SixteenWordCell extends Component{
 
         SixteenBitAddresser decoder = new SixteenBitAddresser();
         subComponents.add(decoder);
-        decoder.getSupply().addConnection(supply);
+        decoder.getSupply().addWithoutCheck(supply);
 
         SixteenBitAddresser selector = new SixteenBitAddresser();
         subComponents.add(selector);
-        selector.getSupply().addConnection(supply);
+        selector.getSupply().addWithoutCheck(supply);
 
         for (int i = 0; i < NUMBER_OF_BITS; i++) {
             decoder.getIn(i).addConnection(write);
@@ -37,7 +37,7 @@ public class SixteenWordCell extends Component{
         for (int i = 0; i < NUMBER_OF_BITS; i++) {
             flipFlops[i] = new ClockedFlipFlop();
             subComponents.add(flipFlops[i]);
-            flipFlops[i].getSupply().addConnection(supply);
+            flipFlops[i].getSupply().addWithoutCheck(supply);
             flipFlops[i].getIn().addConnection(in);
             flipFlops[i].getWrite().addConnection(decoder.getOut(i));
             flipFlops[i].getOut().addConnection(selector.getIn(i));

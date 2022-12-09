@@ -23,7 +23,7 @@ public class SixteenBitAdder extends Component{
             adders[i] = new Adder();
             subComponents.add(adders[i]);
 
-            adders[i].getSupply().addConnection(supply);
+            adders[i].getSupply().addWithoutCheck(supply);
             adders[i].getInOne().addConnection(oneInputs[i]);
             adders[i].getInTwo().addConnection(twoInputs[i]);
             adders[i].getSumOut().addConnection(sumOutputs[i]);

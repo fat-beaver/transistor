@@ -11,24 +11,24 @@ public class ClockedFlipFlop extends Component {
 
         Inverter inverter = new Inverter();
         subComponents.add(inverter);
-        inverter.getSupply().addConnection(supply);
+        inverter.getSupply().addWithoutCheck(supply);
         inverter.getIn().addConnection(in);
 
         ANDGate andGateOne = new ANDGate();
         subComponents.add(andGateOne);
-        andGateOne.getSupply().addConnection(supply);
+        andGateOne.getSupply().addWithoutCheck(supply);
         andGateOne.getInputOne().addConnection(write);
         andGateOne.getInputTwo().addConnection(inverter.getOut());
 
         ANDGate andGateTwo = new ANDGate();
         subComponents.add(andGateTwo);
-        andGateTwo.getSupply().addConnection(supply);
+        andGateTwo.getSupply().addWithoutCheck(supply);
         andGateTwo.getInputOne().addConnection(write);
         andGateTwo.getInputTwo().addConnection(in);
 
         RSLatch latch = new RSLatch();
         subComponents.add(latch);
-        latch.getSupply().addConnection(supply);
+        latch.getSupply().addWithoutCheck(supply);
         latch.getReset().addConnection(andGateOne.getOutput());
         latch.getSet().addConnection(andGateTwo.getOutput());
         latch.getOut().addConnection(out);

@@ -13,15 +13,15 @@ public class TwoToOneSelector extends Component {
 
         ANDGate andOne = new ANDGate();
         subComponents.add(andOne);
-        andOne.getSupply().addConnection(supply);
+        andOne.getSupply().addWithoutCheck(supply);
 
         ANDGate andTwo = new ANDGate();
         subComponents.add(andTwo);
-        andTwo.getSupply().addConnection(supply);
+        andTwo.getSupply().addWithoutCheck(supply);
 
         Inverter inverter = new Inverter();
         subComponents.add(inverter);
-        inverter.getSupply().addConnection(supply);
+        inverter.getSupply().addWithoutCheck(supply);
 
         inOne.addConnection(andOne.getInputOne());
         inTwo.addConnection(andTwo.getInputOne());

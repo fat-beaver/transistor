@@ -13,17 +13,17 @@ public class EdgeFlipFlop extends Component {
 
         ANDGate andOne = new ANDGate();
         subComponents.add(andOne);
-        andOne.getSupply().addConnection(supply);
+        andOne.getSupply().addWithoutCheck(supply);
         andOne.getInputOne().addConnection(clock);
 
         ANDGate andTwo = new ANDGate();
         subComponents.add(andTwo);
-        andTwo.getSupply().addConnection(supply);
+        andTwo.getSupply().addWithoutCheck(supply);
         andTwo.getInputOne().addConnection(clock);
 
         RSLatch latchOne = new RSLatch();
         subComponents.add(latchOne);
-        latchOne.getSupply().addConnection(supply);
+        latchOne.getSupply().addWithoutCheck(supply);
         latchOne.getOut().addConnection(out);
         latchOne.getOppositeOut().addConnection(oppositeOut);
         latchOne.getReset().addConnection(andOne.getOutput());
@@ -31,28 +31,28 @@ public class EdgeFlipFlop extends Component {
 
         Inverter clockInverter = new Inverter();
         subComponents.add(clockInverter);
-        clockInverter.getSupply().addConnection(supply);
+        clockInverter.getSupply().addWithoutCheck(supply);
         clockInverter.getIn().addConnection(clock);
 
         ANDGate andThree = new ANDGate();
         subComponents.add(andThree);
-        andThree.getSupply().addConnection(supply);
+        andThree.getSupply().addWithoutCheck(supply);
         andThree.getInputOne().addConnection(clockInverter.getOut());
         andThree.getInputTwo().addConnection(data);
 
         Inverter dataInverter = new Inverter();
         subComponents.add(dataInverter);
-        dataInverter.getSupply().addConnection(supply);
+        dataInverter.getSupply().addWithoutCheck(supply);
 
         ANDGate andFour = new ANDGate();
         subComponents.add(andFour);
-        andFour.getSupply().addConnection(supply);
+        andFour.getSupply().addWithoutCheck(supply);
         andFour.getInputOne().addConnection(clockInverter.getOut());
         andFour.getInputTwo().addConnection(dataInverter.getOut());
 
         RSLatch latchTwo = new RSLatch();
         subComponents.add(latchTwo);
-        latchTwo.getSupply().addConnection(supply);
+        latchTwo.getSupply().addWithoutCheck(supply);
         latchTwo.getOut().addConnection(andOne.getInputTwo());
         latchTwo.getOppositeOut().addConnection(andTwo.getInputTwo());
         latchTwo.getReset().addConnection(andThree.getOutput());

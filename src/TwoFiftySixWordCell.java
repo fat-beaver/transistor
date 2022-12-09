@@ -17,11 +17,11 @@ public class TwoFiftySixWordCell extends Component {
 
         SixteenBitAddresser decoder = new SixteenBitAddresser();
         subComponents.add(decoder);
-        decoder.getSupply().addConnection(supply);
+        decoder.getSupply().addWithoutCheck(supply);
 
         SixteenBitAddresser selector = new SixteenBitAddresser();
         subComponents.add(selector);
-        selector.getSupply().addConnection(supply);
+        selector.getSupply().addWithoutCheck(supply);
 
         for (int i = 0; i < NUMBER_OF_CELLS; i++) {
             decoder.getIn(i).addConnection(write);
@@ -43,7 +43,7 @@ public class TwoFiftySixWordCell extends Component {
         for (int i = 0; i < NUMBER_OF_CELLS; i++) {
             cells[i] = new SixteenWordCell();
             subComponents.add(cells[i]);
-            cells[i].getSupply().addConnection(supply);
+            cells[i].getSupply().addWithoutCheck(supply);
             cells[i].getIn().addConnection(in);
             cells[i].getWrite().addConnection(decoder.getOut(i));
             cells[i].getOut().addConnection(selector.getIn(i));
