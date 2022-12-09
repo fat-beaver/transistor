@@ -82,7 +82,7 @@ public class Startup extends Component{
         addressCounter.getClear().addConnection(controlPanel.getClear());
         addressCounter.getClock().addConnection(clock.getOut());
         for (int i = 0; i < TwoFiftySixByteCell.ADDRESS_SIZE; i++) {
-            addressCounter.getOutput(i).addConnection(workingMemory.getAddressTwo(i));
+            addressCounter.getOutput(i).addConnection(workingMemory.getAddressOne(i));
         }
 
         SixteenBitAdder adder = new SixteenBitAdder();
