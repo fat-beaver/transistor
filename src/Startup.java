@@ -1,15 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
-import java.util.ArrayList;
 
-public class Startup {
+public class Startup extends Component{
     private static final int WINDOW_WIDTH = 1920;
     private static final int WINDOW_HEIGHT = 1080;
     private static final int TIME_PER_FRAME = 20;
     private static final int PADDING = 2;
     private static final int CYCLES_PER_REPAINT = 1;
-
-    ArrayList<Component> components = new ArrayList<>();
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(Startup::new);
@@ -19,7 +16,7 @@ public class Startup {
 
         Timer cycleTimer = new Timer(TIME_PER_FRAME, actionEvent -> SwingUtilities.invokeLater(() -> {
             for (int i = 0; i < CYCLES_PER_REPAINT; i++) {
-                for (Component component : components) {component.doCycle();}
+                doCycle();
             }
             window.repaint();
         }));
@@ -39,7 +36,15 @@ public class Startup {
         constraints.weightx = 1;
         constraints.weighty = 1;
         constraints.insets = new Insets(PADDING, PADDING, PADDING, PADDING);
+        System.out.println("Adding components now");
+        long startTime = System.nanoTime();
         setUpMemory(pane, constraints);
+        System.out.println("Finished adding components, took " + (System.nanoTime() - startTime) + "ns");
+        System.out.println("Counting transistors now");
+        startTime = System.nanoTime();
+        long transistorCount = getTransistorCount();
+        System.out.println("Finished counting transistors, took " + (System.nanoTime() - startTime) + "ns");
+        System.out.println("There are: " + transistorCount + " transistors");
 
         window.pack();
         window.toFront();
@@ -50,9 +55,24 @@ public class Startup {
     private void setUpMemory(Container pane, GridBagConstraints constraints) {
         SupplyPin supply = new SupplyPin();
 
+        TwoFiftySixByteCell cell = new TwoFiftySixByteCell();
+        subComponents.add(cell);
+        cell.getSupply().addConnection(supply);
+
         constraints.gridx = 0;
         constraints.gridy = 0;
         pane.add(new JLabel("Address"), constraints);
+        Switch[] addressSwitches = new Switch[TwoFiftySixByteCell.ADDRESS_SIZE];
+        for (int i = 0; i < TwoFiftySixByteCell.ADDRESS_SIZE; i++) {
+            addressSwitches[i] = new Switch();
+            subComponents.add(addressSwitches[i]);
+            addressSwitches[i].getIn().addConnection(supply);
+            addressSwitches[i].getOut().addConnection(cell.getAddress(i));
+            constraints.gridx = TwoFiftySixByteCell.ADDRESS_SIZE - i;
+            pane.add(addressSwitches[i].getVisuals(), constraints);
+        }
+
+        constraints.gridx = 0;
         constraints.gridy = 1;
         pane.add(new JLabel("Input"), constraints);
         constraints.gridy = 2;
@@ -60,65 +80,59 @@ public class Startup {
         constraints.gridy = 3;
         pane.add(new JLabel("Output"), constraints);
 
-        Switch inputSwitch = new Switch();
-        components.add(inputSwitch);
-        inputSwitch.getIn().addConnection(supply);
-        constraints.gridx = 1;
-        constraints.gridy = 1;
-        pane.add(inputSwitch.getVisuals(), constraints);
+        Switch[] inputSwitches = new Switch[TwoFiftySixByteCell.WORD_SIZE];
+        Light[] outputLights = new Light[TwoFiftySixByteCell.WORD_SIZE];
 
-        Switch clockSwitch = new Switch();
-        components.add(clockSwitch);
-        clockSwitch.getIn().addConnection(supply);
-        constraints.gridy = 2;
-        pane.add(clockSwitch.getVisuals(), constraints);
+        for (int i = 0; i < TwoFiftySixByteCell.WORD_SIZE; i++) {
+            inputSwitches[i] = new Switch();
+            subComponents.add(inputSwitches[i]);
+            inputSwitches[i].getIn().addConnection(supply);
+            inputSwitches[i].getOut().addConnection(cell.getIn(i));
+            constraints.gridy = 1;
+            constraints.gridx = TwoFiftySixByteCell.WORD_SIZE - i;
+            pane.add(inputSwitches[i].getVisuals(), constraints);
 
-        Light outputLight = new Light();
-        components.add(outputLight);
-        constraints.gridy = 3;
-        pane.add(outputLight.getVisuals(), constraints);
-
-        SixteenWordCell cell = new SixteenWordCell();
-        components.add(cell);
-        cell.getSupply().addConnection(supply);
-        cell.getIn().addConnection(inputSwitch.getOut());
-        cell.getWrite().addConnection(clockSwitch.getOut());
-        cell.getOut().addConnection(outputLight.getInput());
-
-        Switch[] addressSwitches = new Switch[SixteenWordCell.ADDRESS_SIZE];
-        constraints.gridy = 0;
-        for (int i = 0; i < SixteenWordCell.ADDRESS_SIZE; i++) {
-            addressSwitches[i] = new Switch();
-            components.add(addressSwitches[i]);
-            addressSwitches[i].getIn().addConnection(supply);
-            addressSwitches[i].getOut().addConnection(cell.getAddress(i));
-            constraints.gridx = SixteenWordCell.ADDRESS_SIZE - i;
-            pane.add(addressSwitches[i].getVisuals(), constraints);
+            outputLights[i] = new Light();
+            subComponents.add(outputLights[i]);
+            outputLights[i].getInput().addConnection(cell.getOut(i));
+            constraints.gridy = 3;
+            constraints.gridx = TwoFiftySixByteCell.WORD_SIZE - i;
+            pane.add(outputLights[i].getVisuals(), constraints);
         }
+        constraints.gridx = 0;
+        constraints.gridy = 2;
+        Switch saveSwitch = new Switch();
+        subComponents.add(saveSwitch);
+        saveSwitch.getIn().addConnection(supply);
+        saveSwitch.getOut().addConnection(cell.getWrite());
+        constraints.gridx = 1;
+        pane.add(saveSwitch.getVisuals(), constraints);
+        
+        
     }
     private void setUpLatch(Container pane, GridBagConstraints constraints) {
         SupplyPin supply = new SupplyPin();
 
         RSLatch latch = new RSLatch();
-        components.add(latch);
+        subComponents.add(latch);
         latch.getSupply().addConnection(supply);
 
         Light light = new Light();
-        components.add(light);
+        subComponents.add(light);
         light.getInput().addConnection(latch.getOut());
         constraints.gridx = 0;
         constraints.gridy = 1;
         pane.add(light.getVisuals(), constraints);
 
         Switch switchOne = new Switch();
-        components.add(switchOne);
+        subComponents.add(switchOne);
         switchOne.getIn().addConnection(supply);
         switchOne.getOut().addConnection(latch.getSet());
         constraints.gridy = 0;
         pane.add(switchOne.getVisuals(), constraints);
 
         Switch switchTwo = new Switch();
-        components.add(switchTwo);
+        subComponents.add(switchTwo);
         switchTwo.getIn().addConnection(supply);
         switchTwo.getOut().addConnection(latch.getReset());
         constraints.gridx = 1;
@@ -129,13 +143,13 @@ public class Startup {
         SupplyPin supply = new SupplyPin();
 
         ByteAdder byteAdder = new ByteAdder();
-        components.add(byteAdder);
+        subComponents.add(byteAdder);
         byteAdder.getSupply().addConnection(supply);
 
         constraints.weightx = 0;
         constraints.weighty = 0;
         Switch operation = new Switch();
-        components.add(operation);
+        subComponents.add(operation);
         operation.getIn().addConnection(supply);
         operation.getOut().addConnection(byteAdder.getCarryIn());
         constraints.gridx = 0;
@@ -149,7 +163,7 @@ public class Startup {
         for (int i = 0; i < ByteAdder.WORD_SIZE; i++) {
             constraints.gridy = 2;
             Switch topSwitch = new Switch();
-            components.add(topSwitch);
+            subComponents.add(topSwitch);
             topSwitch.getIn().addConnection(supply);
             topSwitch.getOut().addConnection(byteAdder.getInOne(i));
             constraints.gridx = ByteAdder.WORD_SIZE + 1 - i;
@@ -157,13 +171,13 @@ public class Startup {
 
             constraints.gridy = 3;
             Switch bottomSwitch = new Switch();
-            components.add(bottomSwitch);
+            subComponents.add(bottomSwitch);
             bottomSwitch.getIn().addConnection(supply);
             constraints.gridx = ByteAdder.WORD_SIZE + 1 - i;
             pane.add(bottomSwitch.getVisuals(), constraints);
 
             XORGate subtractionGate = new XORGate();
-            components.add(subtractionGate);
+            subComponents.add(subtractionGate);
             subtractionGate.getSupply().addConnection(supply);
             subtractionGate.getInputOne().addConnection(operation.getOut());
             subtractionGate.getInputTwo().addConnection(bottomSwitch.getOut());
@@ -171,17 +185,17 @@ public class Startup {
 
             constraints.gridy = 4;
             Light light = new Light();
-            components.add(light);
+            subComponents.add(light);
             light.getInput().addConnection(byteAdder.getSumOut(i));
             constraints.gridx = ByteAdder.WORD_SIZE + 1 - i;
             pane.add(light.getVisuals(), constraints);
         }
 
         Light carryLight = new Light();
-        components.add(carryLight);
+        subComponents.add(carryLight);
 
         XORGate carryXor = new XORGate();
-        components.add(carryXor);
+        subComponents.add(carryXor);
         carryXor.getSupply().addConnection(supply);
         carryXor.getInputOne().addConnection(byteAdder.getCarryOut());
         carryXor.getInputTwo().addConnection(operation.getOut());
@@ -199,19 +213,19 @@ public class Startup {
         constraints.gridy = 0;
 
         BinaryCounter counter = new BinaryCounter();
-        components.add(counter);
+        subComponents.add(counter);
         counter.getSupply().addConnection(supply);
 
         for (int i = 0; i < BinaryCounter.WORD_SIZE; i++) {
             Light light = new Light();
-            components.add(light);
+            subComponents.add(light);
             constraints.gridx = BinaryCounter.WORD_SIZE - i;
             light.getInput().addConnection(counter.getOutput(i));
             pane.add(light.getVisuals(), constraints);
         }
 
         Oscillator clockSwitch = new Oscillator();
-        components.add(clockSwitch);
+        subComponents.add(clockSwitch);
         clockSwitch.getSupply().addConnection(supply);
         clockSwitch.getOut().addConnection(counter.getClock());
     }

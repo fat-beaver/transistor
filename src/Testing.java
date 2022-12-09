@@ -63,9 +63,13 @@ public class Testing {
                 }
             }
         });
+        long startTime = System.nanoTime();
+
+        SupplyPin supply = new SupplyPin();
 
 
 
+        System.out.println(System.nanoTime() - startTime);
         input.start();
 
         while (running) {
