@@ -1,5 +1,5 @@
 public class Oscillator extends Component {
-    private static final int CYCLES_PER_PULSE = 8;
+    private static final int CYCLES_PER_PULSE = 64;
     private final Pin out;
     private final Pin supply;
     private int cycleCount;

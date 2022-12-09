@@ -55,6 +55,10 @@ public class Startup extends Component{
     private void setUpComponents(Container pane, GridBagConstraints constraints) {
         SupplyPin supply = new SupplyPin();
 
+        Oscillator clock = new Oscillator();
+        subComponents.add(clock);
+        clock.getSupply().addConnection(supply);
+
         TwoFiftySixByteCell cell = new TwoFiftySixByteCell();
         subComponents.add(cell);
         cell.getSupply().addConnection(supply);
@@ -70,7 +74,33 @@ public class Startup extends Component{
         }
         for (int i = 0; i < TwoFiftySixByteCell.WORD_SIZE; i++) {
             cell.getIn(i).addConnection(controlPanel.getWordOut(i));
-            cell.getOut(i).addConnection(controlPanel.getDisplay(i));
+        }
+
+        EightBitCounter addressCounter = new EightBitCounter();
+        subComponents.add(addressCounter);
+        addressCounter.getSupply().addConnection(supply);
+        addressCounter.getClear().addConnection(controlPanel.getClear());
+        addressCounter.getClock().addConnection(clock.getOut());
+        for (int i = 0; i < TwoFiftySixByteCell.ADDRESS_SIZE; i++) {
+            addressCounter.getOutput(i).addConnection(cell.getAddress(i));
+        }
+
+        SixteenBitAdder adder = new SixteenBitAdder();
+        subComponents.add(adder);
+        adder.getSupply().addConnection(supply);
+        adder.getCarryOut().addConnection(controlPanel.getError());
+
+        SixteenBitLatch latch = new SixteenBitLatch();
+        subComponents.add(latch);
+        latch.getSupply().addConnection(supply);
+        latch.getClear().addConnection(controlPanel.getClear());
+        latch.getClock().addConnection(clock.getOut());
+
+        for (int i = 0; i < TwoFiftySixByteCell.WORD_SIZE; i++) {
+            adder.getInOne(i).addConnection(cell.getOut(i));
+            adder.getInTwo(i).addConnection(latch.getOut(i));
+            adder.getSumOut(i).addConnection(latch.getIn(i));
+            latch.getOut(i).addConnection(controlPanel.getDisplay(i));
         }
     }
 }

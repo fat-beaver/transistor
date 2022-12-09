@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -62,8 +63,8 @@ public class Testing {
                             } else {
                                 System.out.print("OFF | ");
                             }
-                            System.out.println();
                         }
+                        System.out.println();
                         break;
                     default:
                         System.out.println("command not found");
@@ -71,13 +72,41 @@ public class Testing {
                 }
             }
         });
-        long startTime = System.nanoTime();
+        long startTime = System.currentTimeMillis();
 
         SupplyPin supply = new SupplyPin();
 
+        SixteenBitLatch latch = new SixteenBitLatch();
+        subComponents.add(latch);
+        latch.getSupply().addConnection(supply);
 
+        Switch clockSwitch = new Switch();
+        subComponents.add(clockSwitch);
+        switches.add(clockSwitch);
+        clockSwitch.getIn().addConnection(supply);
+        clockSwitch.getOut().addConnection(latch.getClock());
+        for (int i = 0; i < SixteenBitLatch.WORD_LENGTH; i++) {
+            Switch inputSwitch = new Switch();
+            subComponents.add(inputSwitch);
+            switches.add(inputSwitch);
+            inputSwitch.getIn().addConnection(supply);
+            inputSwitch.getOut().addConnection(latch.getIn(i));
 
-        System.out.println(System.nanoTime() - startTime);
+            Light outputLight = new Light();
+            subComponents.add(outputLight);
+            lights.add(outputLight);
+            outputLight.getInput().addConnection(latch.getOut(i));
+
+        }
+
+        for (int i = 0; i < SixteenBitLatch.WORD_LENGTH; i++) {
+            Light inputLight = new Light();
+            subComponents.add(inputLight);
+            lights.add(inputLight);
+            inputLight.getInput().addConnection(latch.getIn(i));
+        }
+
+        System.out.println(System.currentTimeMillis() - startTime);
         input.start();
 
         while (running) {

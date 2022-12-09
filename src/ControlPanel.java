@@ -10,6 +10,8 @@ public class ControlPanel extends Component {
     private final Pin[] addressOut;
     private final Pin[] wordOut;
     private final Pin writeOut;
+    private final Pin clear;
+    private final Pin error;
     public ControlPanel(Container pane, GridBagConstraints constraints, int addressSize, int wordSize) {
         display = new Pin[wordSize];
         addressIn = new Pin[addressSize];
@@ -19,20 +21,57 @@ public class ControlPanel extends Component {
         addressOut = new Pin[addressSize];
         wordOut = new Pin[wordSize];
         writeOut = new Pin(this);
-        
+        clear = new Pin(this);
+        error = new Pin(this);
+
         Switch override = new Switch();
         subComponents.add(override);
         override.getIn().addConnection(supply);
         constraints.gridx = wordSize;
         constraints.gridy = 2;
         pane.add(override.getVisuals(), constraints);
-        
+
+        Switch clearSwitch = new Switch();
+        subComponents.add(clearSwitch);
+        clearSwitch.getIn().addConnection(supply);
+        clearSwitch.getOut().addConnection(clear);
+        constraints.gridx = wordSize - 2;
+        pane.add(clearSwitch.getVisuals(), constraints);
+
+        Light errorLight = new Light();
+        subComponents.add(errorLight);
+        constraints.gridx = wordSize - 4;
+        pane.add(errorLight.getVisuals(), constraints);
+
+        RSLatch errorLatch = new RSLatch();
+        subComponents.add(errorLatch);
+        errorLatch.getSupply().addConnection(supply);
+        errorLatch.getSet().addConnection(error);
+        errorLatch.getReset().addConnection(clear);
+        errorLatch.getOut().addConnection(errorLight.getInput());
+
         constraints.gridx = 0;
         constraints.gridy = 0;
         pane.add(new JLabel("Address"), constraints);
+        constraints.gridx = 0;
+        constraints.gridy = 1;
+        pane.add(new JLabel("Input"), constraints);
+        constraints.gridy = 2;
+        pane.add(new JLabel("Write"), constraints);
+        constraints.gridx = wordSize - 1;
+        pane.add(new JLabel("Override"), constraints);
+        constraints.gridx = wordSize - 3;
+        pane.add(new JLabel("Clear"), constraints);
+        constraints.gridx = wordSize - 5;
+        pane.add(new JLabel("ERROR"), constraints);
+        constraints.gridx = 0;
+        constraints.gridy = 3;
+        pane.add(new JLabel("Output"), constraints);
+
         Switch[] addressSwitches = new Switch[addressSize];
         TwoToOneSelector[] addressSelectors = new TwoToOneSelector[addressSize];
 
+        constraints.gridy = 0;
         for (int i = 0; i < addressSize; i++) {
             addressIn[i] = new Pin(this);
             addressOut[i] = new Pin(this);
@@ -49,17 +88,6 @@ public class ControlPanel extends Component {
             constraints.gridx = addressSize - i;
             pane.add(addressSwitches[i].getVisuals(), constraints);
         }
-
-        constraints.gridx = 0;
-        constraints.gridy = 1;
-        pane.add(new JLabel("Input"), constraints);
-        constraints.gridy = 2;
-        pane.add(new JLabel("Write"), constraints);
-        constraints.gridx = wordSize - 1;
-        pane.add(new JLabel("Override"), constraints);
-        constraints.gridx = 0;
-        constraints.gridy = 3;
-        pane.add(new JLabel("Output"), constraints);
 
         Switch[] inputSwitches = new Switch[wordSize];
         TwoToOneSelector[] inputSelectors = new TwoToOneSelector[wordSize];
@@ -127,5 +155,11 @@ public class ControlPanel extends Component {
     }
     public Pin getWriteOut() {
         return writeOut;
+    }
+    public Pin getClear() {
+        return clear;
+    }
+    public Pin getError() {
+        return error;
     }
 }
