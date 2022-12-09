@@ -55,6 +55,7 @@ public class Startup {
         Switch operation = new Switch();
         components.add(operation);
         operation.getIn().addConnection(supply);
+        operation.getOut().addConnection(byteAdder.getCarryIn());
         constraints.gridx = 0;
         constraints.gridy = 0;
         pane.add(operation.getVisuals(), constraints);
