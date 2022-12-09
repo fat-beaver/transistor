@@ -2,17 +2,23 @@ import javax.swing.*;
 import java.awt.*;
 
 public class ControlPanel extends Component {
-    private final Pin[] in;
+    private final Pin[] display;
+    private final Pin[] addressIn;
+    private final Pin[] wordIn;
+    private final Pin writeIn;
     private final Pin supply;
     private final Pin[] addressOut;
     private final Pin[] wordOut;
-    private final Pin write;
+    private final Pin writeOut;
     public ControlPanel(Container pane, GridBagConstraints constraints, int addressSize, int wordSize) {
-        in = new Pin[wordSize];
+        display = new Pin[wordSize];
+        addressIn = new Pin[addressSize];
+        wordIn = new Pin[wordSize];
+        writeIn = new Pin(this);
         supply = new Pin(this);
         addressOut = new Pin[addressSize];
         wordOut = new Pin[wordSize];
-        write = new Pin(this);
+        writeOut = new Pin(this);
         
         Switch override = new Switch();
         subComponents.add(override);
@@ -25,18 +31,21 @@ public class ControlPanel extends Component {
         constraints.gridy = 0;
         pane.add(new JLabel("Address"), constraints);
         Switch[] addressSwitches = new Switch[addressSize];
-        ANDGate[] addressSelectors = new ANDGate[addressSize];
+        TwoToOneSelector[] addressSelectors = new TwoToOneSelector[addressSize];
+
         for (int i = 0; i < addressSize; i++) {
+            addressIn[i] = new Pin(this);
             addressOut[i] = new Pin(this);
             addressSwitches[i] = new Switch();
             subComponents.add(addressSwitches[i]);
             addressSwitches[i].getIn().addConnection(supply);
-            addressSelectors[i] = new ANDGate();
+            addressSelectors[i] = new TwoToOneSelector();
             subComponents.add(addressSelectors[i]);
             addressSelectors[i].getSupply().addConnection(supply);
-            addressSelectors[i].getInputOne().addConnection(addressSwitches[i].getOut());
-            addressSelectors[i].getInputTwo().addConnection(override.getOut());
-            addressSelectors[i].getOutput().addConnection(addressOut[i]);
+            addressSelectors[i].getInOne().addConnection(addressIn[i]);
+            addressSelectors[i].getInTwo().addConnection(addressSwitches[i].getOut());
+            addressSelectors[i].getSelect().addConnection(override.getOut());
+            addressSelectors[i].getOut().addConnection(addressOut[i]);
             constraints.gridx = addressSize - i;
             pane.add(addressSwitches[i].getVisuals(), constraints);
         }
@@ -45,7 +54,7 @@ public class ControlPanel extends Component {
         constraints.gridy = 1;
         pane.add(new JLabel("Input"), constraints);
         constraints.gridy = 2;
-        pane.add(new JLabel("Save"), constraints);
+        pane.add(new JLabel("Write"), constraints);
         constraints.gridx = wordSize - 1;
         pane.add(new JLabel("Override"), constraints);
         constraints.gridx = 0;
@@ -53,28 +62,30 @@ public class ControlPanel extends Component {
         pane.add(new JLabel("Output"), constraints);
 
         Switch[] inputSwitches = new Switch[wordSize];
-        ANDGate[] inputSelectors = new ANDGate[wordSize];
+        TwoToOneSelector[] inputSelectors = new TwoToOneSelector[wordSize];
         Light[] outputLights = new Light[wordSize];
 
         for (int i = 0; i < wordSize; i++) {
+            display[i] = new Pin(this);
+            wordIn[i] = new Pin(this);
             wordOut[i] = new Pin(this);
             inputSwitches[i] = new Switch();
             subComponents.add(inputSwitches[i]);
             inputSwitches[i].getIn().addConnection(supply);
-            inputSelectors[i] = new ANDGate();
+            inputSelectors[i] = new TwoToOneSelector();
             subComponents.add(inputSelectors[i]);
             inputSelectors[i].getSupply().addConnection(supply);
-            inputSelectors[i].getInputOne().addConnection(inputSwitches[i].getOut());
-            inputSelectors[i].getInputTwo().addConnection(override.getOut());
-            wordOut[i].addConnection(inputSelectors[i].getOutput());
+            inputSelectors[i].getInOne().addConnection(wordIn[i]);
+            inputSelectors[i].getInTwo().addConnection(inputSwitches[i].getOut());
+            inputSelectors[i].getSelect().addConnection(override.getOut());
+            wordOut[i].addConnection(inputSelectors[i].getOut());
             constraints.gridy = 1;
             constraints.gridx = wordSize - i;
             pane.add(inputSwitches[i].getVisuals(), constraints);
 
-            in[i] = new Pin(this);
             outputLights[i] = new Light();
             subComponents.add(outputLights[i]);
-            outputLights[i].getInput().addConnection(in[i]);
+            outputLights[i].getInput().addConnection(display[i]);
             constraints.gridy = 3;
             constraints.gridx = wordSize - i;
             pane.add(outputLights[i].getVisuals(), constraints);
@@ -83,18 +94,27 @@ public class ControlPanel extends Component {
         Switch saveSwitch = new Switch();
         subComponents.add(saveSwitch);
         saveSwitch.getIn().addConnection(supply);
-        ANDGate saveSelector = new ANDGate();
-        subComponents.add(saveSelector);
-        saveSelector.getSupply().addConnection(supply);
-        saveSelector.getInputOne().addConnection(saveSwitch.getOut());
-        saveSelector.getInputTwo().addConnection(override.getOut());
-        saveSelector.getOutput().addConnection(write);
+        TwoToOneSelector writeSelector = new TwoToOneSelector();
+        subComponents.add(writeSelector);
+        writeSelector.getSupply().addConnection(supply);
+        writeSelector.getInOne().addConnection(writeIn);
+        writeSelector.getInTwo().addConnection(saveSwitch.getOut());
+        writeSelector.getSelect().addConnection(override.getOut());
+        writeSelector.getOut().addConnection(writeOut);
         constraints.gridx = 1;
         pane.add(saveSwitch.getVisuals(), constraints);
     }
-
-    public Pin getIn(int i) {
-        return in[i];
+    public Pin getDisplay(int i) {
+        return display[i];
+    }
+    public Pin getAddressIn(int i) {
+        return addressIn[i];
+    }
+    public Pin getWordIn(int i) {
+        return wordIn[i];
+    }
+    public Pin getWriteIn() {
+        return writeIn;
     }
     public Pin getSupply() {
         return supply;
@@ -105,7 +125,7 @@ public class ControlPanel extends Component {
     public Pin getWordOut(int i) {
         return wordOut[i];
     }
-    public Pin getWrite() {
-        return write;
+    public Pin getWriteOut() {
+        return writeOut;
     }
 }

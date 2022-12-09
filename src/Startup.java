@@ -37,13 +37,13 @@ public class Startup extends Component{
         constraints.weighty = 1;
         constraints.insets = new Insets(PADDING, PADDING, PADDING, PADDING);
         System.out.println("Adding components now");
-        long startTime = System.nanoTime();
+        long startTime = System.currentTimeMillis();
         setUpComponents(pane, constraints);
-        System.out.println("Finished adding components, took " + (System.nanoTime() - startTime) + "ns");
+        System.out.println("Finished adding components, took " + (System.currentTimeMillis() - startTime) + "ms");
         System.out.println("Counting transistors now");
-        startTime = System.nanoTime();
+        startTime = System.currentTimeMillis();
         long transistorCount = getTransistorCount();
-        System.out.println("Finished counting transistors, took " + (System.nanoTime() - startTime) + "ns");
+        System.out.println("Finished counting transistors, took " + (System.currentTimeMillis() - startTime) + "ms");
         System.out.println("There are: " + transistorCount + " transistors");
 
         window.pack();
@@ -63,14 +63,14 @@ public class Startup extends Component{
         subComponents.add(controlPanel);
         controlPanel.getSupply().addConnection(supply);
 
-        cell.getWrite().addConnection(controlPanel.getWrite());
+        cell.getWrite().addConnection(controlPanel.getWriteOut());
 
         for (int i = 0; i < TwoFiftySixByteCell.ADDRESS_SIZE; i++) {
             cell.getAddress(i).addConnection(controlPanel.getAddressOut(i));
         }
         for (int i = 0; i < TwoFiftySixByteCell.WORD_SIZE; i++) {
             cell.getIn(i).addConnection(controlPanel.getWordOut(i));
-            cell.getOut(i).addConnection(controlPanel.getIn(i));
+            cell.getOut(i).addConnection(controlPanel.getDisplay(i));
         }
     }
 }
